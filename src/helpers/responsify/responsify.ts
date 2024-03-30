@@ -8,13 +8,13 @@ function responsify<T extends string | number>(
 ): Array<[string, ICssValue | Record<string, ICssValue>]> {
   const finalStyle: Array<[string, ICssValue | Record<string, ICssValue>]> = [];
   if (typeof value === 'string' || typeof value === 'number') {
-    finalStyle.push([property, `${modifyVal?.(value) ?? value}`]);
+    finalStyle.push([property, modifyVal?.(value) ?? value]);
   } else if (value) {
     if (value.sm) {
       finalStyle.push([
         '@media only screen and (max-width: 600px)',
         {
-          [property]: `${modifyVal?.(value.sm) ?? value.sm}`,
+          [property]: modifyVal?.(value.sm) ?? value.sm,
         },
       ]);
     }
@@ -22,12 +22,12 @@ function responsify<T extends string | number>(
       finalStyle.push([
         '@media only screen and (min-width: 600px) and (max-width: 992px)',
         {
-          [property]: `${modifyVal?.(value.md) ?? value.md}`,
+          [property]: modifyVal?.(value.md) ?? value.md,
         },
       ]);
     }
     if (value.base) {
-      finalStyle.push([property, `${modifyVal?.(value.base) ?? value.base}`]);
+      finalStyle.push([property, modifyVal?.(value.base) ?? value.base]);
     }
   }
   return finalStyle;
