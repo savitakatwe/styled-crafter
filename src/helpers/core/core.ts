@@ -65,13 +65,17 @@ const core =
       });
 
     const cssValues: Record<string, ICssValue | Record<string, ICssValue>> = {};
+
     cssValuesList.forEach((value) => {
       if (typeof value[1] === 'string' || typeof value[1] === 'number') {
         cssValues[value[0]] = value[1];
       } else {
+        const responsiveCssValue = cssValues[value[0]] as Record<
+          string,
+          ICssValue
+        >;
         cssValues[value[0]] = {
-          // @ts-ignore
-          ...(cssValues[value[0]] || {}),
+          ...responsiveCssValue,
           ...value[1],
         };
       }
