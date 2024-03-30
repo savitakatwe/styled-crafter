@@ -35,13 +35,12 @@ describe('should test core', () => {
     });
   });
 
+  const instanceWithTheme = core({
+    mt: { property: 'margin-top', scale: 'spacing' },
+    mb: { property: 'margin-bottom', scale: 'spacing' },
+    ml: { property: 'margin-left', scale: 'spacing' },
+  });
   it('should check if theme value working', () => {
-    const instanceWithTheme = core({
-      mt: { property: 'margin-top', scale: 'spacing' },
-      mb: { property: 'margin-bottom', scale: 'spacing' },
-      ml: { property: 'margin-left', scale: 'spacing' },
-    });
-
     expect(
       instanceWithTheme({
         mt: 'sp1',
@@ -57,6 +56,40 @@ describe('should test core', () => {
     ).toStrictEqual({
       'margin-top': '10px',
       'margin-bottom': '10px',
+      'margin-left': '14px',
+    });
+  });
+
+  it('should check responsive with theme', () => {
+    expect(
+      instanceWithTheme({
+        mb: '50%',
+        mt: {
+          base: '20px',
+          sm: '30px',
+          md: '40px',
+        },
+        ml: {
+          base: 'sp2',
+          sm: 'sp1',
+        },
+        theme: {
+          spacing: {
+            sp1: '10px',
+            sp2: 14,
+          },
+        },
+      }),
+    ).toEqual({
+      'margin-bottom': '50%',
+      '@media only screen and (max-width: 600px)': {
+        'margin-top': '30px',
+        'margin-left': '10px',
+      },
+      '@media only screen and (min-width: 600px) and (max-width: 992px)': {
+        'margin-top': '40px',
+      },
+      'margin-top': '20px',
       'margin-left': '14px',
     });
   });

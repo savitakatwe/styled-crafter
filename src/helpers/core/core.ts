@@ -2,6 +2,7 @@ import { type IPropertyMap, type IStylingProps } from './core.types';
 import type ICssValue from '../../types/ICssValue';
 import type IPropertyKey from '../../types/IPropertyKey';
 import type IPropertyConfig from '../../types/IPropertyConfig';
+import { responsify } from '../responsify';
 
 const transformValue = (
   propertyConfig: IPropertyConfig,
@@ -29,8 +30,8 @@ const core =
   <T>(propertyConfigs: IPropertyMap<T>) =>
   (stylingProps: IStylingProps<T>) => {
     const propKeys = Object.keys(stylingProps) as Array<IPropertyKey<T>>;
-    const cssValues: Record<string, ICssValue> = {};
-
+    let cssValuesList: Array<[string, ICssValue | Record<string, ICssValue>]> =
+      [];
     propKeys
       .filter((value) => value !== 'theme')
       .forEach((value) => {
@@ -38,29 +39,43 @@ const core =
         const propertyConfig = propertyConfigs[value];
 
         if (propertyValue && propertyConfig) {
-          const themePropertyValue = getValueFromTheme(
-            propertyConfig,
-            stylingProps,
-            propertyValue,
-          );
-
-          const transformedValue = transformValue(
-            propertyConfig,
-            themePropertyValue,
-          );
-
           if (propertyConfig?.property !== undefined) {
-            cssValues[propertyConfig.property] = transformedValue;
+            const responsiveVal = responsify(
+              propertyConfig.property,
+              stylingProps[value],
+              (property) => {
+                const themePropertyValue = getValueFromTheme(
+                  propertyConfig,
+                  stylingProps,
+                  property,
+                );
+                return transformValue(propertyConfig, themePropertyValue);
+              },
+            );
+            cssValuesList = [...cssValuesList, ...responsiveVal];
           }
 
-          if (propertyConfig.properties) {
-            propertyConfig.properties.forEach(
-              (property: string | number) =>
-                (cssValues[property] = transformedValue),
-            );
-          }
+          // if (propertyConfig.properties) {
+          // propertyConfig.properties.forEach(
+          //   (property: string | number) =>
+          //     (cssValues[property] = transformedValue),
+          // );
+          // }
         }
       });
+
+    const cssValues: Record<string, ICssValue | Record<string, ICssValue>> = {};
+    cssValuesList.forEach((value) => {
+      if (typeof value[1] === 'string' || typeof value[1] === 'number') {
+        cssValues[value[0]] = value[1];
+      } else {
+        cssValues[value[0]] = {
+          // @ts-ignore
+          ...(cssValues[value[0]] || {}),
+          ...value[1],
+        };
+      }
+    });
 
     return cssValues;
   };
