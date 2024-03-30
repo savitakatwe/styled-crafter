@@ -38,29 +38,32 @@ const core =
         const propertyValue = stylingProps[value];
         const propertyConfig = propertyConfigs[value];
 
+        const processPropertyToValue = (property: string): void => {
+          const responsiveVal = responsify(
+            property,
+            stylingProps[value],
+            (property) => {
+              const themePropertyValue = getValueFromTheme(
+                propertyConfig,
+                stylingProps,
+                property,
+              );
+              return transformValue(propertyConfig, themePropertyValue);
+            },
+          );
+          cssValuesList = [...cssValuesList, ...responsiveVal];
+        };
+
         if (propertyValue && propertyConfig) {
           if (propertyConfig?.property !== undefined) {
-            const responsiveVal = responsify(
-              propertyConfig.property,
-              stylingProps[value],
-              (property) => {
-                const themePropertyValue = getValueFromTheme(
-                  propertyConfig,
-                  stylingProps,
-                  property,
-                );
-                return transformValue(propertyConfig, themePropertyValue);
-              },
-            );
-            cssValuesList = [...cssValuesList, ...responsiveVal];
+            processPropertyToValue(propertyConfig.property);
           }
 
-          // if (propertyConfig.properties) {
-          // propertyConfig.properties.forEach(
-          //   (property: string | number) =>
-          //     (cssValues[property] = transformedValue),
-          // );
-          // }
+          if (propertyConfig.properties) {
+            propertyConfig.properties.forEach((property) => {
+              processPropertyToValue(property);
+            });
+          }
         }
       });
 
