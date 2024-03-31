@@ -21,6 +21,7 @@ describe('should test responsify', () => {
         sm: 2,
         base: 1,
         md: 3,
+        lg: 4,
       }),
     ).toEqual([
       [
@@ -33,6 +34,12 @@ describe('should test responsify', () => {
         '@media (min-width: 768px)',
         {
           'flex-grow': 3,
+        },
+      ],
+      [
+        '@media (min-width: 1024px)',
+        {
+          'flex-grow': 4,
         },
       ],
       ['flex-grow', 1],
