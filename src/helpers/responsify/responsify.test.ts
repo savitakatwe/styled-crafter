@@ -24,13 +24,13 @@ describe('should test responsify', () => {
       }),
     ).toEqual([
       [
-        '@media only screen and (max-width: 600px)',
+        '@media (min-width: 640px)',
         {
           'flex-grow': 2,
         },
       ],
       [
-        '@media only screen and (min-width: 600px) and (max-width: 992px)',
+        '@media (min-width: 768px)',
         {
           'flex-grow': 3,
         },
@@ -56,13 +56,13 @@ describe('should test responsify', () => {
       ),
     ).toEqual([
       [
-        '@media only screen and (max-width: 600px)',
+        '@media (min-width: 640px)',
         {
           'background-color': '#32d205',
         },
       ],
       [
-        '@media only screen and (min-width: 600px) and (max-width: 992px)',
+        '@media (min-width: 768px)',
         {
           'background-color': '#161e80',
         },

@@ -82,11 +82,11 @@ describe('should test core', () => {
       }),
     ).toEqual({
       'margin-bottom': '50%',
-      '@media only screen and (max-width: 600px)': {
+      '@media (min-width: 640px)': {
         'margin-top': '30px',
         'margin-left': '10px',
       },
-      '@media only screen and (min-width: 600px) and (max-width: 992px)': {
+      '@media (min-width: 768px)': {
         'margin-top': '40px',
       },
       'margin-top': '20px',

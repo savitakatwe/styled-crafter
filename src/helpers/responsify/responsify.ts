@@ -12,7 +12,7 @@ function responsify<T extends string | number>(
   } else if (value) {
     if (value.sm) {
       finalStyle.push([
-        '@media only screen and (max-width: 600px)',
+        '@media (min-width: 640px)',
         {
           [property]: modifyVal?.(value.sm) ?? value.sm,
         },
@@ -20,9 +20,17 @@ function responsify<T extends string | number>(
     }
     if (value.md) {
       finalStyle.push([
-        '@media only screen and (min-width: 600px) and (max-width: 992px)',
+        '@media (min-width: 768px)',
         {
           [property]: modifyVal?.(value.md) ?? value.md,
+        },
+      ]);
+    }
+    if (value.lg) {
+      finalStyle.push([
+        '@media (min-width: 1024px)',
+        {
+          [property]: modifyVal?.(value.lg) ?? value.lg,
         },
       ]);
     }
